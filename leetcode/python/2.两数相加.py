@@ -31,18 +31,26 @@ class Solution:
             else:
                 p = 0
             s %= 10
-            arr.append(ListNode(s))
+            self.appendNode(arr, ListNode(s))
             s = 0
             l1 = None if l1 == None else l1.next
             l2 = None if l2 == None else l2.next
         if p == 1:
-            arr.append(ListNode(p))
-        for i in range(len(arr)-1):
-            arr[i].next = arr[i+1]
+            self.appendNode(arr, ListNode(p))
         if len(arr) > 0:
             return arr[0]
         else:
             return None
+
+    def appendNode(self, arr, node):
+        """
+        在尾部插入节点.
+        """
+        if len(arr) > 0:
+            arr[-1].next = node
+            arr.append(node)
+        else:
+            arr.append(node)
 
 
 # @lc code=end
