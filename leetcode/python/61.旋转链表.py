@@ -28,7 +28,7 @@ class Solution:
 
         steps = n - k % n - 1
         cur = head
-        for i in range(steps):
+        for _ in range(steps):
             cur = cur.next
         res = cur.next
         cur.next = None
