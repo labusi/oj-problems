@@ -4,10 +4,15 @@
 # [200] 岛屿数量
 #
 from typing import List
+import collections
+
 
 # @lc code=start
 class Solution:
     def numIslands(self, grid: List[List[str]]) -> int:
+        return self.bfs(grid)
+
+    def basic(self, grid):
         if not grid or not grid[0]:
             return 0
 
@@ -45,9 +50,48 @@ class Solution:
 
         return len(id2xy.keys())
 
+    def bfs(self, grid):
+        """
+        广度优先搜索.
+        遇到的1都标记为0, 搜索的次数即为岛屿的个数.
+        """
+        if not grid or not grid[0]:
+            return 0
+
+        m, n = len(grid), len(grid[0])
+        ans = 0
+
+        q = collections.deque()
+        for i in range(m):
+            for j in range(n):
+                if grid[i][j] == "1":
+                    q.append((i, j))
+                    grid[i][j] = "0"
+                    ans += 1
+                    while q:
+                        x, y = q.popleft()
+                        if x > 0 and grid[x - 1][y] == "1":
+                            grid[x - 1][y] = "0"
+                            q.append((x - 1, y))
+                        if x < m - 1 and grid[x + 1][y] == "1":
+                            grid[x + 1][y] = "0"
+                            q.append((x + 1, y))
+                        if y > 0 and grid[x][y - 1] == "1":
+                            grid[x][y - 1] = "0"
+                            q.append((x, y - 1))
+                        if y < n - 1 and grid[x][y + 1] == "1":
+                            grid[x][y + 1] = "0"
+                            q.append((x, y + 1))
+
+        return ans
+
 
 if __name__ == "__main__":
-    grid = [["1", "1", "1"], ["0", "1", "0"], ["1", "1", "1"]]
+    grid = [
+        ["1", "0", "1", "1", "1"],
+        ["1", "0", "1", "0", "1"],
+        ["1", "1", "1", "0", "1"],
+    ]
     s = Solution()
     ans = s.numIslands(grid)
     print(ans)
