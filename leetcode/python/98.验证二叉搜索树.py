@@ -24,7 +24,8 @@
 class Solution:
     def isValidBST(self, root: TreeNode) -> bool:
         # return self.checkPath(root)
-        return self.inOrder2(root)
+        # return self.inOrder2(root)
+        return self.inOrder3(root)
 
     def helper1(self, root):
         if root is None:
@@ -104,5 +105,21 @@ class Solution:
                         return False
                     else:
                         last_val = cur[0].val
+        return True
+
+    def inOrder3(self, root):
+        s, val = [], float('-inf')
+        while s or root:
+            while root:
+                s.append(root)
+                root = root.left
+            root = s.pop()
+            if root is None:
+                continue
+            if root.val <= val:
+                return False
+            val = root.val
+            root = root.right
+
         return True
 # @lc code=end
