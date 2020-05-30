@@ -7,38 +7,37 @@
 from typing import List
 
 # @lc code=start
+
+
 class Solution:
     def canCross(self, stones: List[int]) -> bool:
         return self.helper1(stones)
 
     def helper1(self, stones):
         """
-        超时.
-        思路: 
-            dp[i]是一个列表, i表示第i个石子, dp[i]中保存的是上一跳步长的所有可能结果, 不考虑上一跳的起点.
-        根据dp[i]中的元素, 就可以计算出从当前位置能跳到的所有可能的下一个石子, 并且更新对应石子的dp.
+        dp[i], 保存到达第i个石子时, 上一跳距离的集合.
+        lessions: 选择合适的数据结构, 比如此题的set; 减少不必要的循环;
         """
         if not stones or stones[1] > 1:
             return False
 
         n = len(stones)
-        dp = [[] for _ in range(n)]
-        dp[0].append(0)
-        for i in range(0, n - 1):
-            for k in dp[i]:
-                if k - 1 > 0:
-                    next = stones[i] + k - 1
-                    if next in stones:
-                        dp[stones.index(next)].append(k - 1)
-                if k > 0:
-                    next = stones[i] + k
-                    if next in stones:
-                        dp[stones.index(next)].append(k)
-                next = stones[i] + k + 1
-                if next in stones:
-                    dp[stones.index(next)].append(k + 1)
+        dp = [set() for _ in range(n)]
+        dp[0].add(0)
+        dp[1].add(1)
+
+        for i in range(2, n):
+            for j in range(1, i):
+                if not dp[j] or max(dp[j])+1 + stones[j] < stones[i]:
+                    continue
+                for step in dp[j]:
+                    if stones[j] + step - 1 == stones[i]:
+                        dp[i].add(step-1)
+                    if stones[j] + step == stones[i]:
+                        dp[i].add(step)
+                    if stones[j] + step + 1 == stones[i]:
+                        dp[i].add(step+1)
 
         return len(dp[-1]) != 0
-
 
 # @lc code=end
