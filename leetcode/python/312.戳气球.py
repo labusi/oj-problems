@@ -12,24 +12,18 @@ from typing import List
 class Solution:
     def maxCoins(self, nums: List[int]) -> int:
         """
-        思路:
-        每次选取nums[left]*nums[right]最大的元素删除.
-        错了.
+        根据最后一个被戳破的气球构造状态转移关系.
         """
-        if not nums:
-            return 0
-        n, ans = len(nums), 0
-        for _ in range(n):
-            target_index, reward = -1, -1
-            for j in range(len(nums)):
-                # 找到left*right最大的元素
-                left = 1 if j == 0 else nums[j-1]
-                right = 1 if j == len(nums)-1 else nums[j+1]
-                tmp_reward = left*right
-                if tmp_reward > reward:
-                    target_index = j
-                    reward = tmp_reward
-            ans += (reward * nums[target_index])
-            del nums[target_index]
-        return ans
+        n = len(nums) + 2
+        nums = [1] + nums + [1]
+        dp = [[0]*n for _ in range(n)]
+
+        for i in range(n-2, -1, -1):
+            for j in range(i+1, n):
+                for k in range(i+1, j):
+                    val = dp[i][k] + dp[k][j] + nums[i]*nums[k]*nums[j]
+                    if val > dp[i][j]:
+                        dp[i][j] = val
+
+        return dp[0][-1]
 # @lc code=end
